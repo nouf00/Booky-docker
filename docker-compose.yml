@@ -1,39 +1,41 @@
-version: '1.0'
+version: '27.2.0'
 
 services:
-  mysql:
+  mysql_container:
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: booky
-      MYSQL_PASSWORD: ""
+      MYSQL_DATABASE: Booky  
+     ## MYSQL_USER: root
+      #MYSQL_PASSWORD: myuser  
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: root
+
+
     ports:
-      - "3306:3306"
+      - "3306:3306"  
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mysql_container-data:/var/lib/mysql  
 
   backend:
     build:
       context: ./booky-bakend
       dockerfile: Dockerfile
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/booky
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_container:3306/Booky?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: ""
+      SPRING_DATASOURCE_PASSWORD: root  
     ports:
-      - "8080:8080"
+      - "8080:8080"  
     depends_on:
-      - mysql
+      -  mysql_container
 
   frontend:
     build:
       context: ./booky-frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3000:3000"  
     depends_on:
       - backend
 
 volumes:
-  mysql-data:
+  mysql_container-data:  
